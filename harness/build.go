@@ -81,7 +81,12 @@ func Build(buildFlags ...string) (app *App, compileError *revel.Error) {
 	gotten := make(map[string]struct{})
 	for {
 		appVersion := getAppVersion()
-		versionLinkerFlags := fmt.Sprintf("-X %s/app.APP_VERSION \"%s\"", revel.ImportPath, appVersion)
+		goVersion := runtime.Version()
+		if goVersion >= "go1.5" {
+			versionLinkerFlags := fmt.Sprintf("-X %s/app.APP_VERSION=\"%s\"", revel.ImportPath, appVersion)
+		} else {
+			versionLinkerFlags := fmt.Sprintf("-X %s/app.APP_VERSION \"%s\"", revel.ImportPath, appVersion)
+		}
 		flags := []string{
 			"build",
 			"-i",
